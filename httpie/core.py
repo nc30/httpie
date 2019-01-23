@@ -97,6 +97,15 @@ def program(args, env, log_error):
             downloader.pre_request(args.headers)
 
         final_response = get_response(args, config_dir=env.config.directory)
+        if final_response.headers['Content-Type'] == 'application/x-msgpack':
+            try:
+                import msgpack
+                import json
+                final_response._content = json.dumps(msgpack.unpackb(final_response.content, raw=False)).encode()
+                final_response.headers['Content-Type'] = 'application/json'
+            except Exception:
+                pass
+
         if args.all:
             responses = final_response.history + [final_response]
         else:
