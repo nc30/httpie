@@ -737,6 +737,11 @@ def parse_items(items,
                     value = load_json_preserve_order(value)
                 except ValueError as e:
                     raise ParseError('"%s": %s' % (item.orig, e))
+            try:
+                value = int(value)
+            except ValueError:
+                pass
+
             target = data
 
         else:
